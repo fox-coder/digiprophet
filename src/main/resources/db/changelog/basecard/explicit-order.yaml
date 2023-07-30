@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - include:
+      file: Y2023.Q3/28-07-create-new-table.sql
+      relativeToChangelogFile: true
+  - include:
+      file: Y2023.Q3/28-07-insert-data.sql
+      relativeToChangelogFile: true
