@@ -14,5 +14,7 @@ public interface BaseCardRepository extends JpaRepository<BaseCard, Long>, JpaSp
 
     List<BaseCard> findByDeckCategoryAndCardTypeAndInUseIsFalse(DeckCategory deckCategory, CardType cardType);
 
+    List<BaseCard> findByDeckCategoryAndCardTypeAndInUseIsTrue(DeckCategory deckCategory, CardType cardType);
+
     List<BaseCard> findByDeckCategoryAndCardType(DeckCategory deckCategory, CardType cardType);
 }

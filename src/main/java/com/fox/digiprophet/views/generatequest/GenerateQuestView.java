@@ -72,14 +72,17 @@ public class GenerateQuestView extends Div {
         drawCardsButtons.addClassName(Gap.SMALL);
         drawCardsButtons.addClassName(Padding.SMALL);
         drawCardsButtons.setMaxWidth("1250px");
+        drawCardsButtons.setEnabled(false);
         questCategorySelect.setLabel("Quest category");
         questCategorySelect.setItems(DeckCategory.values());
         questCategorySelect.setItemLabelGenerator(DeckCategory::getThemeName);
         questCategorySelect.addValueChangeListener(select -> {
             if (select.getValue() != null) {
                 generateQuestButton.setEnabled(true);
+                drawCardsButtons.setEnabled(true);
             } else {
                 generateQuestButton.setEnabled(false);
+                drawCardsButtons.setEnabled(false);
             }
         });
 
@@ -272,6 +275,7 @@ public class GenerateQuestView extends Div {
 
     private void replaceChosenCard(CardViewEvent cardViewEvent) {
         BaseCard baseCard = cardViewEvent.getBaseCard();
+        baseCardService.markCardDrawn(baseCard);
         switch (baseCard.getCardType()) {
             case ACTOR -> {
                 qrBinder.getBean().setActor(baseCard);

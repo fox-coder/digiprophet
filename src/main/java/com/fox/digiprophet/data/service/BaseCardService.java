@@ -1,7 +1,6 @@
 package com.fox.digiprophet.data.service;
 
 import com.fox.digiprophet.data.entity.BaseCard;
-import com.fox.digiprophet.data.entity.CardOption;
 import com.fox.digiprophet.data.entity.CardType;
 import com.fox.digiprophet.data.entity.DeckCategory;
 import com.fox.digiprophet.data.repository.BaseCardRepository;
@@ -53,6 +52,8 @@ public class BaseCardService {
     }
 
     public void markCardDrawn(BaseCard baseCard) {
+        List<BaseCard> usedCards = baseCardRepository.findByDeckCategoryAndCardTypeAndInUseIsTrue(baseCard.getDeckCategory(), baseCard.getCardType());
+        returnCardsToDeck(usedCards);
         baseCard.setInUse(true);
         baseCardRepository.save(baseCard);
     }
