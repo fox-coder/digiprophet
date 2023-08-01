@@ -3,23 +3,16 @@ package com.fox.digiprophet.views.generatequest;
 import com.fox.digiprophet.data.entity.BaseCard;
 import com.fox.digiprophet.data.entity.CardOption;
 import com.fox.digiprophet.data.entity.CardType;
-import com.fox.digiprophet.data.entity.QuestRequest;
-import com.fox.digiprophet.data.service.BaseCardService;
-import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.H5;
 import com.vaadin.flow.component.html.Paragraph;
-import com.vaadin.flow.data.binder.Binder;
-import com.vaadin.flow.theme.lumo.LumoUtility;
+import com.vaadin.flow.shared.Registration;
 import org.apache.commons.collections4.CollectionUtils;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class CardView extends FormLayout {
 
@@ -39,6 +32,9 @@ public class CardView extends FormLayout {
             baseCards.setValue(baseCard);
         }
         baseCards.setMaxWidth("250px");
+        baseCards.addValueChangeListener(event -> {
+            fireEvent(new CardViewEvent(this, baseCards.getValue(), chosenCardOption));
+        });
         formLayout.add(baseCards);
 
         Paragraph cardDescription = new Paragraph();
@@ -54,6 +50,9 @@ public class CardView extends FormLayout {
             cardOptions.setValue(cardOptionList(baseCard).get(chosenCardOption));
         }
         cardOptions.setMaxWidth("250px");
+        cardOptions.addValueChangeListener(event -> {
+            fireEvent(new CardViewEvent(this, baseCards.getValue(), cardOptions.getValue().getId().intValue()-1));
+        });
         formLayout.add(cardOptions);
 
         Paragraph cardOptionDescription = new Paragraph();
@@ -103,6 +102,10 @@ public class CardView extends FormLayout {
         } else {
             return baseCard.getCardOptions();
         }
+    }
+
+    public Registration addChangeListener(ComponentEventListener<CardViewEvent> listener) {
+        return addListener(CardViewEvent.class, listener);
     }
 
 }

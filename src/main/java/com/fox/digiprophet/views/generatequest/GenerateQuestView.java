@@ -89,56 +89,45 @@ public class GenerateQuestView extends Div {
         generateQuestButton.setEnabled(false);
         generateQuestButton.addClickListener(event -> {
             qrBinder.setBean(questRequestService.generateQuestConfiguration(questCategorySelect.getValue()));
-            CardView newActorCard = new CardView(CardType.ACTOR, qrBinder.getBean().getActor(), qrBinder.getBean().getChosenActorOption(),
-                    baseCardService.getAllCardsForCategoryAndType(questCategorySelect.getValue(), CardType.ACTOR));
-            cardsLayout.replace(cards.get(0), newActorCard);
-            cards.set(0, newActorCard);
-
-            CardView newActionCard = new CardView(CardType.ACTION, qrBinder.getBean().getAction(), qrBinder.getBean().getChosenActionOption(),
-                    baseCardService.getAllCardsForCategoryAndType(questCategorySelect.getValue(), CardType.ACTION));
-            cardsLayout.replace(cards.get(1), newActionCard);
-            cards.set(1, newActionCard);
-
-            CardView newSubjectCard = new CardView(CardType.SUBJECT, qrBinder.getBean().getSubject(), qrBinder.getBean().getChosenSubjectOption(),
-                    baseCardService.getAllCardsForCategoryAndType(questCategorySelect.getValue(), CardType.SUBJECT));
-            cardsLayout.replace(cards.get(2), newSubjectCard);
-            cards.set(2, newSubjectCard);
-
-            CardView newIntentCard = new CardView(CardType.INTENT, qrBinder.getBean().getIntent(), qrBinder.getBean().getChosenIntentOption(),
-                    baseCardService.getAllCardsForCategoryAndType(questCategorySelect.getValue(), CardType.INTENT));
-            cardsLayout.replace(cards.get(3), newIntentCard);
-            cards.set(3, newIntentCard);
-
-            CardView newDevelopmentCard = new CardView(CardType.DEVELOPMENT, qrBinder.getBean().getDevelopment(), qrBinder.getBean().getChosenDevelopmentOption(),
-                    baseCardService.getAllCardsForCategoryAndType(questCategorySelect.getValue(), CardType.DEVELOPMENT));
-            cardsLayout.replace(cards.get(4), newDevelopmentCard);
-            cards.set(4, newDevelopmentCard);
+            updateActorCard();
+            updateActionCard();
+            updateSubjectCard();
+            updateIntentCard();
+            updateDevelopmentCard();
         });
 
+        //----- Cards -----
 
         CardView actorCard = new CardView(CardType.ACTOR, qrBinder.getBean().getActor(), qrBinder.getBean().getChosenActorOption(),
                 baseCardService.getAllCardsForCategoryAndType(questCategorySelect.getValue(), CardType.ACTOR));
+        actorCard.addChangeListener(this::replaceChosenCard);
         cards.add(actorCard);
 
         CardView actionCard = new CardView(CardType.ACTION, qrBinder.getBean().getAction(), qrBinder.getBean().getChosenActionOption(),
                 baseCardService.getAllCardsForCategoryAndType(questCategorySelect.getValue(), CardType.ACTION));
+        actionCard.addChangeListener(this::replaceChosenCard);
         cards.add(actionCard);
 
         CardView subjectCard = new CardView(CardType.SUBJECT, qrBinder.getBean().getSubject(), qrBinder.getBean().getChosenSubjectOption(),
                 baseCardService.getAllCardsForCategoryAndType(questCategorySelect.getValue(), CardType.SUBJECT));
+        subjectCard.addChangeListener(this::replaceChosenCard);
         cards.add(subjectCard);
 
         CardView intentCard = new CardView(CardType.INTENT, qrBinder.getBean().getIntent(), qrBinder.getBean().getChosenIntentOption(),
                 baseCardService.getAllCardsForCategoryAndType(questCategorySelect.getValue(), CardType.INTENT));
+        intentCard.addChangeListener(this::replaceChosenCard);
         cards.add(intentCard);
 
         CardView developmentCard = new CardView(CardType.DEVELOPMENT, qrBinder.getBean().getDevelopment(), qrBinder.getBean().getChosenDevelopmentOption(),
                 baseCardService.getAllCardsForCategoryAndType(questCategorySelect.getValue(), CardType.DEVELOPMENT));
+        developmentCard.addChangeListener(this::replaceChosenCard);
         cards.add(developmentCard);
 
         for (CardView cardView: cards) {
             cardsLayout.add(cardView);
         }
+
+        //----- Redraw cards buttons -----
 
         Button drawActorCardButton = new Button();
         drawActorCardButton.setText("Draw card");
@@ -146,10 +135,7 @@ public class GenerateQuestView extends Div {
         drawCardsButtons.add(drawActorCardButton);
         drawActorCardButton.addClickListener(event -> {
             qrBinder.getBean().setActor(baseCardService.redrawCard(qrBinder.getBean().getActor()));
-            CardView newActorCard = new CardView(CardType.ACTOR, qrBinder.getBean().getActor(), qrBinder.getBean().getChosenActorOption(),
-                    baseCardService.getAllCardsForCategoryAndType(questCategorySelect.getValue(), CardType.ACTOR));
-            cardsLayout.replace(cards.get(0), newActorCard);
-            cards.set(0, newActorCard);
+            updateActorCard();
         });
 
         Button drawActionCardButton = new Button();
@@ -158,10 +144,7 @@ public class GenerateQuestView extends Div {
         drawCardsButtons.add(drawActionCardButton);
         drawActionCardButton.addClickListener(event -> {
             qrBinder.getBean().setAction(baseCardService.redrawCard(qrBinder.getBean().getAction()));
-            CardView newActionCard = new CardView(CardType.ACTION, qrBinder.getBean().getAction(), qrBinder.getBean().getChosenActionOption(),
-                    baseCardService.getAllCardsForCategoryAndType(questCategorySelect.getValue(), CardType.ACTION));
-            cardsLayout.replace(cards.get(1), newActionCard);
-            cards.set(1, newActionCard);
+            updateActionCard();
         });
 
         Button drawSubjectCardButton = new Button();
@@ -170,10 +153,7 @@ public class GenerateQuestView extends Div {
         drawCardsButtons.add(drawSubjectCardButton);
         drawSubjectCardButton.addClickListener(event -> {
             qrBinder.getBean().setSubject(baseCardService.redrawCard(qrBinder.getBean().getSubject()));
-            CardView newSubjectCard = new CardView(CardType.SUBJECT, qrBinder.getBean().getSubject(), qrBinder.getBean().getChosenSubjectOption(),
-                    baseCardService.getAllCardsForCategoryAndType(questCategorySelect.getValue(), CardType.SUBJECT));
-            cardsLayout.replace(cards.get(2), newSubjectCard);
-            cards.set(2, newSubjectCard);
+            updateSubjectCard();
         });
 
         Button drawIntentCardButton = new Button();
@@ -182,12 +162,8 @@ public class GenerateQuestView extends Div {
         drawCardsButtons.add(drawIntentCardButton);
         drawIntentCardButton.addClickListener(event -> {
             qrBinder.getBean().setIntent(baseCardService.redrawCard(qrBinder.getBean().getIntent()));
-            CardView newIntentCard = new CardView(CardType.INTENT, qrBinder.getBean().getIntent(), qrBinder.getBean().getChosenIntentOption(),
-                    baseCardService.getAllCardsForCategoryAndType(questCategorySelect.getValue(), CardType.INTENT));
-            cardsLayout.replace(cards.get(3), newIntentCard);
-            cards.set(3, newIntentCard);
+            updateIntentCard();
         });
-
 
         Button drawDevelopmentCardButton = new Button();
         drawDevelopmentCardButton.setText("Draw card");
@@ -195,12 +171,8 @@ public class GenerateQuestView extends Div {
         drawCardsButtons.add(drawDevelopmentCardButton);
         drawDevelopmentCardButton.addClickListener(event -> {
             qrBinder.getBean().setDevelopment(baseCardService.redrawCard(qrBinder.getBean().getDevelopment()));
-            CardView newDevelopmentCard = new CardView(CardType.DEVELOPMENT, qrBinder.getBean().getDevelopment(), qrBinder.getBean().getChosenDevelopmentOption(),
-                    baseCardService.getAllCardsForCategoryAndType(questCategorySelect.getValue(), CardType.DEVELOPMENT));
-            cardsLayout.replace(cards.get(4), newDevelopmentCard);
-            cards.set(4, newDevelopmentCard);
+            updateDevelopmentCard();
         });
-
 
         //----- Resulting text area -----
         resultingRequest.setLabel("Resulting configuration");
@@ -245,32 +217,88 @@ public class GenerateQuestView extends Div {
         qrBinder.setBean(new QuestRequest());
         questCategorySelect.clear();
 
-        CardView newActorCard = new CardView(CardType.ACTOR, null, 0, new ArrayList<>());
-        cardsLayout.replace(cards.get(0), newActorCard);
-        cards.set(0, newActorCard);
-
-        CardView newActionCard = new CardView(CardType.ACTION,null, 0, new ArrayList<>());
-        cardsLayout.replace(cards.get(1), newActionCard);
-        cards.set(1, newActionCard);
-
-        CardView newSubjectCard = new CardView(CardType.SUBJECT, null, 0, new ArrayList<>());
-        cardsLayout.replace(cards.get(2), newSubjectCard);
-        cards.set(2, newSubjectCard);
-
-        CardView newIntentCard = new CardView(CardType.INTENT, null, 0, new ArrayList<>());
-        cardsLayout.replace(cards.get(3), newIntentCard);
-        cards.set(3, newIntentCard);
-
-        CardView newDevelopmentCard = new CardView(CardType.DEVELOPMENT, null, 0, new ArrayList<>());
-        cardsLayout.replace(cards.get(4), newDevelopmentCard);
-        cards.set(4, newDevelopmentCard);
+        updateActorCard();
+        updateActionCard();
+        updateSubjectCard();
+        updateIntentCard();
+        updateDevelopmentCard();
 
         resultingRequest.clear();
     }
 
-
     private Component createTitle() {
         return new H3("Generate quest");
+    }
+
+    private void updateActorCard() {
+        CardView newActorCard = new CardView(CardType.ACTOR, qrBinder.getBean().getActor(), qrBinder.getBean().getChosenActorOption(),
+                baseCardService.getAllCardsForCategoryAndType(questCategorySelect.getValue(), CardType.ACTOR));
+        newActorCard.addChangeListener(this::replaceChosenCard);
+        cardsLayout.replace(cards.get(0), newActorCard);
+        cards.set(0, newActorCard);
+    }
+
+    private void updateActionCard() {
+        CardView newActionCard = new CardView(CardType.ACTION, qrBinder.getBean().getAction(), qrBinder.getBean().getChosenActionOption(),
+                baseCardService.getAllCardsForCategoryAndType(questCategorySelect.getValue(), CardType.ACTION));
+        newActionCard.addChangeListener(this::replaceChosenCard);
+        cardsLayout.replace(cards.get(1), newActionCard);
+        cards.set(1, newActionCard);
+    }
+
+    private void updateSubjectCard() {
+        CardView newSubjectCard = new CardView(CardType.SUBJECT, qrBinder.getBean().getSubject(), qrBinder.getBean().getChosenSubjectOption(),
+                baseCardService.getAllCardsForCategoryAndType(questCategorySelect.getValue(), CardType.SUBJECT));
+        newSubjectCard.addChangeListener(this::replaceChosenCard);
+        cardsLayout.replace(cards.get(2), newSubjectCard);
+        cards.set(2, newSubjectCard);
+    }
+
+    private void updateIntentCard() {
+        CardView newIntentCard = new CardView(CardType.INTENT, qrBinder.getBean().getIntent(), qrBinder.getBean().getChosenIntentOption(),
+                baseCardService.getAllCardsForCategoryAndType(questCategorySelect.getValue(), CardType.INTENT));
+        newIntentCard.addChangeListener(this::replaceChosenCard);
+        cardsLayout.replace(cards.get(3), newIntentCard);
+        cards.set(3, newIntentCard);
+    }
+
+    private void updateDevelopmentCard() {
+        CardView newDevelopmentCard = new CardView(CardType.DEVELOPMENT, qrBinder.getBean().getDevelopment(), qrBinder.getBean().getChosenDevelopmentOption(),
+                baseCardService.getAllCardsForCategoryAndType(questCategorySelect.getValue(), CardType.DEVELOPMENT));
+        newDevelopmentCard.addChangeListener(this::replaceChosenCard);
+        cardsLayout.replace(cards.get(4), newDevelopmentCard);
+        cards.set(4, newDevelopmentCard);
+    }
+
+    private void replaceChosenCard(CardViewEvent cardViewEvent) {
+        BaseCard baseCard = cardViewEvent.getBaseCard();
+        switch (baseCard.getCardType()) {
+            case ACTOR -> {
+                qrBinder.getBean().setActor(baseCard);
+                qrBinder.getBean().setChosenActorOption(cardViewEvent.getChosenCardOption());
+                updateActorCard();
+            }
+            case ACTION -> {
+                qrBinder.getBean().setAction(baseCard);
+                qrBinder.getBean().setChosenActionOption(cardViewEvent.getChosenCardOption());
+                updateActionCard();
+            }
+            case INTENT -> {
+                qrBinder.getBean().setIntent(baseCard);
+                qrBinder.getBean().setChosenIntentOption(cardViewEvent.getChosenCardOption());
+                updateIntentCard();
+            }
+            case SUBJECT -> {
+                qrBinder.getBean().setSubject(baseCard);
+                qrBinder.getBean().setChosenSubjectOption(cardViewEvent.getChosenCardOption());
+                updateSubjectCard();
+            }
+            case DEVELOPMENT -> {
+                qrBinder.getBean().setDevelopment(baseCard);
+                qrBinder.getBean().setChosenDevelopmentOption(cardViewEvent.getChosenCardOption());
+                updateDevelopmentCard();
+            }
+        }
     }
 
 }
